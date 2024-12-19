@@ -6,28 +6,18 @@ pipeline {
         KUBERNETES_NAMESPACE = 'ilyas-wordpress'  // Replace with your namespace
     }
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout your repository
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'git@github.com:ilyasjaelani/wp-iaj.git']])
-            }
-        }
-        stage('Create namespace on Kubernetes') {
+        //stage('Checkout') {
+        //    steps {
+        //        // Checkout your repository
+        //        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'git@github.com:ilyasjaelani/wp-iaj.git']])
+        //    }
+        //}
+        stage('View Namespaces') {
             steps {
                 script {
                     // Create namespace on Kubernetes using kubectl
                     sh '''
-                        kubectl create namespace $KUBERNETES_NAMESPACE
-                    '''
-                }
-            }
-        }
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    // Deploy to Kubernetes using kubectl
-                    sh '''
-                        kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
+                        kubectl get all -n  $KUBERNETES_NAMESPACE
                     '''
                 }
             }
