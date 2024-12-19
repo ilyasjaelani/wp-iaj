@@ -22,7 +22,7 @@ pipeline {
                 }
             }
         }
-        stage('View Pods') {
+        stage('View describe pods') {
             steps {
                 script {
                     // Create namespace on Kubernetes using kubectl
@@ -32,7 +32,7 @@ pipeline {
                 }
             }
         }
-        stage('View Pods') {
+        stage('View Nodes') {
             steps {
                 script {
                     // Create namespace on Kubernetes using kubectl
@@ -42,7 +42,7 @@ pipeline {
                 }
             }
         }
-        stage('View Pods') {
+        stage('View Nodes top') {
             steps {
                 script {
                     // Create namespace on Kubernetes using kubectl
