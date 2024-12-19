@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ilyas-wordpress
+  labels:
+    app: ilyas-wordpress
+spec:
+  ports:
+    - protocol: TCP
+      port: 8100
+      targetPort: 80
+  selector:
+    app: ilyas-wordpress
+    tier: frontend
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ilyas-wordpress-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false" # Nonaktifkan redirect HTTPS (opsional)
+#    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+#  ingressClassName: nginx
+#  tls:
+#  - hosts:
+#    - blog.lakewoodvilla.my.id # Ganti dengan domain/subdomain Anda
+#    secretName: blog-lakewoodvilla-tls # Nama Secret yang berisi sertifikat SSL
+  rules:
+  - host: blog.lakewoodvilla.my.id # Ganti dengan domain/subdomain Anda
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ilyas-wordpress
+            port:
+              number: 8100
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wp-pv-claim
+  labels:
+    app: ilyas-wordpress
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ilyas-wordpress
+  labels:
+    app: ilyas-wordpress
+spec:
+  selector:
+    matchLabels:
+      app: ilyas-wordpress
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ilyas-wordpress
+        tier: frontend
+    spec:
+      containers:
+      - image: wordpress:6.2.1-apache
+        name: ilyas-wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: ilyas-wordpress-mysql
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        - name: WORDPRESS_DB_USER
+          value: wordpress
+        ports:
+        - containerPort: 80
+          name: ilyas-wordpress
+        volumeMounts:
+        - name: wordpress-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: wp-pv-claim
