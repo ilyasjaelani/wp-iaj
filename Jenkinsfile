@@ -32,6 +32,26 @@ pipeline {
                 }
             }
         }
+        stage('View Pods') {
+            steps {
+                script {
+                    // Create namespace on Kubernetes using kubectl
+                    sh '''
+                        kubectl describe nodes
+                    '''
+                }
+            }
+        }
+        stage('View Pods') {
+            steps {
+                script {
+                    // Create namespace on Kubernetes using kubectl
+                    sh '''
+                        kubectl top node
+                    '''
+                }
+            }
+        }
     }
 }
 
