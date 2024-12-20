@@ -22,27 +22,27 @@ pipeline {
         //        }
         //    }
         //}
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    // Deploy to Kubernetes using kubectl
-                    sh '''
-                        kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
-                    '''
-                }
-            }
-        }
-        //stage('delete manifest in Kubernetes') {
+        //stage('Deploy to Kubernetes') {
         //    steps {
         //        script {
         //            // Deploy to Kubernetes using kubectl
         //            sh '''
-        //                kubectl delete -k ./ -n $KUBERNETES_NAMESPACE
-        //                sleep 120
+        //                kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
         //            '''
         //        }
         //    }
         //}
+        stage('delete manifest in Kubernetes') {
+            steps {
+                script {
+                    // Deploy to Kubernetes using kubectl
+                    sh '''
+                        kubectl delete -k ./ -n $KUBERNETES_NAMESPACE
+                        sleep 60
+                    '''
+                }
+            }
+        }
         stage('View Namespaces') {
             steps {
                 script {
