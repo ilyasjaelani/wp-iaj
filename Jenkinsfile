@@ -12,42 +12,43 @@ pipeline {
         //        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'git@github.com:ilyasjaelani/wp-iaj.git']])
         //    }
         //}
+        //stage('Create namespace on Kubernetes') {
+        //    steps {
+        //        script {
+        //            // Create namespace on Kubernetes using kubectl
+        //            sh '''
+        //                kubectl create namespace $KUBERNETES_NAMESPACE
+        //            '''
+        //        }
+        //    }
+        //}
+        //stage('Deploy to Kubernetes') {
+        //    steps {
+        //        script {
+        //            // Deploy to Kubernetes using kubectl
+        //            sh '''
+        //                kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
+        //            '''
+        //        }
+        //    }
+        //}
+        stage('delete manifest in Kubernetes') {
+            steps {
+                script {
+                    // Deploy to Kubernetes using kubectl
+                    sh '''
+                        kubectl delete -k ./ -n $KUBERNETES_NAMESPACE
+                        sleep 120
+                    '''
+                }
+            }
+        }
         stage('View Namespaces') {
             steps {
                 script {
                     // Create namespace on Kubernetes using kubectl
                     sh '''
                         kubectl get all -n  $KUBERNETES_NAMESPACE
-                    '''
-                }
-            }
-        }
-        stage('View describe pods') {
-            steps {
-                script {
-                    // Create namespace on Kubernetes using kubectl
-                    sh '''
-                        kubectl describe pods ilyas-wordpress-mysql-fb58f47d-xflzh -n $KUBERNETES_NAMESPACE
-                    '''
-                }
-            }
-        }
-        stage('View Nodes') {
-            steps {
-                script {
-                    // Create namespace on Kubernetes using kubectl
-                    sh '''
-                        kubectl describe nodes
-                    '''
-                }
-            }
-        }
-        stage('View Nodes top') {
-            steps {
-                script {
-                    // Create namespace on Kubernetes using kubectl
-                    sh '''
-                        kubectl top node
                     '''
                 }
             }
