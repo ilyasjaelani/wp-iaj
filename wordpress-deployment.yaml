@@ -51,7 +51,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -75,6 +75,10 @@ spec:
       containers:
       - image: wordpress:6.2.1-apache
         name: ilyas-wordpress
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1500m"
         env:
         - name: WORDPRESS_DB_HOST
           value: ilyas-wordpress-mysql
