@@ -9,7 +9,6 @@ spec:
     - port: 3306
   selector:
     app: ilyas-wordpress
-    tier: mysql
   clusterIP: None
 ---
 apiVersion: v1
@@ -23,7 +22,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,14 +34,12 @@ spec:
   selector:
     matchLabels:
       app: ilyas-wordpress
-      tier: mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: ilyas-wordpress
-        tier: mysql
     spec:
       containers:
       - image: mysql:5.7
