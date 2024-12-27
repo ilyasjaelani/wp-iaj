@@ -27,7 +27,7 @@ pipeline {
                 script {
                     // Deploy to Kubernetes using kubectl
                     sh '''
-                        kubectl delete -f wp-deployment.yaml -n $KUBERNETES_NAMESPACE
+                        kubectl apply -f wp-deployment.yaml -n $KUBERNETES_NAMESPACE
                         sleep 60
                     '''
                 }
