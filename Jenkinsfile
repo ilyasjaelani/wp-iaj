@@ -49,7 +49,7 @@ pipeline {
                 script {
                     // Create namespace on Kubernetes using kubectl
                     sh '''
-                        kubectl get all -n  $KUBERNETES_NAMESPACE
+                        kubectl delete namespace $KUBERNETES_NAMESPACE
                     '''
                 }
             }
