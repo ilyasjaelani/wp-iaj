@@ -3,7 +3,7 @@ pipeline {
     environment {
         // Define your Docker Hub credentials and image name here
         KUBE_CONTEXT = 'ilyas-wordpress'  // Kube context if you have multiple clusters
-        KUBERNETES_NAMESPACE = 'ilyas-wordpress'  // Replace with your namespace
+        KUBERNETES_NAMESPACE = 'ilyasjae-wordpress'  // Replace with your namespace
     }
     stages {
         stage('Checkout') {
@@ -12,22 +12,22 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'git', url: 'git@github.com:ilyasjaelani/wp-iaj.git']])
             }
         }
-        //stage('Create namespace on Kubernetes') {
-        //    steps {
-        //        script {
-        //            // Create namespace on Kubernetes using kubectl
-        //            sh '''
-        //                kubectl create namespace $KUBERNETES_NAMESPACE
-        //            '''
-        //        }
-        //    }
-        //}
+        stage('Create namespace on Kubernetes') {
+            steps {
+                script {
+                    // Create namespace on Kubernetes using kubectl
+                    sh '''
+                        kubectl create namespace $KUBERNETES_NAMESPACE
+                    '''
+                }
+            }
+        }
         stage('Deploy to Kubernetes') {
             steps {
                 script {
                     // Deploy to Kubernetes using kubectl
                     sh '''
-                        kubectl delete -f wp-deployment.yaml -n $KUBERNETES_NAMESPACE
+                        kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
                         sleep 60
                     '''
                 }
@@ -49,7 +49,7 @@ pipeline {
                 script {
                     // Create namespace on Kubernetes using kubectl
                     sh '''
-                        kubectl delete namespace $KUBERNETES_NAMESPACE
+                        kubectl get all $KUBERNETES_NAMESPACE
                     '''
                 }
             }
