@@ -78,10 +78,11 @@ spec:
             cpu: "100m"
         env:
         - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
+          value: qjJ1Bd43MWsB
+          #          valueFrom:
+          #            secretKeyRef:
+          #              name: mysql-pass
+          #              key: password
         - name: MYSQL_DATABASE
           value: wordpress
         - name: MYSQL_USER
