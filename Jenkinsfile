@@ -33,17 +33,17 @@ pipeline {
         //        }
         //    }
         //}
-        //stage('delete manifest in Kubernetes') {
-        //   steps {
-        //        script {
-        //            // Deploy to Kubernetes using kubectl
-        //            sh '''
-        //                kubectl delete -k ./ -n $KUBERNETES_NAMESPACE
-        //                sleep 60
-        //            '''
-        //        }
-        //    }
-        //}
+        stage('delete manifest in Kubernetes') {
+           steps {
+                script {
+                    // Deploy to Kubernetes using kubectl
+                    sh '''
+                        kubectl delete -k ./ -n $KUBERNETES_NAMESPACE
+                        sleep 60
+                    '''
+                }
+            }
+        }
         stage('View Namespaces') {
             steps {
                 script {
