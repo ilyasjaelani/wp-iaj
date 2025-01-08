@@ -3,5 +3,5 @@ secretGenerator:
   literals:
   - password=qjJ1Bd43MWsB
 resources:
-  - mysql-deployment.yaml
-  - wordpress-deployment.yaml
+  - db-deployment.yaml
+  - w-deployment.yaml
