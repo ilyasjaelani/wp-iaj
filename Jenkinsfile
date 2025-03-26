@@ -13,7 +13,7 @@ pipeline {
     }
     stage('Deploy to Kubernetes') {
       steps {
-        withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'ilyas-k8s', contextName: '', credentialsId: 'ilyas-k8s-config', namespace: '$KUBERNETES_NAMESPACE', serverUrl: '']]) {
+        withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'ilyas-k8s', contextName: '', credentialsId: 'ilyas-k8s-config', namespace: 'default', serverUrl: 'https://k8s-master01:6443']]) {
           sh '''
             kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
             sleep 60
@@ -23,7 +23,7 @@ pipeline {
     }
     stage('View Namespaces') {
       steps {
-        withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'ilyas-k8s', contextName: '', credentialsId: 'ilyas-k8s-config', namespace: 'KUBERNETES_NAMESPACE', serverUrl: '']]) {
+        withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'ilyas-k8s', contextName: '', credentialsId: 'ilyas-k8s-config', namespace: 'default', serverUrl: 'https://k8s-master01:6443']]) {
           sh '''
             kubectl get all -n $KUBERNETES_NAMESPACE
           '''
