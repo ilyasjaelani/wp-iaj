@@ -1,59 +1,34 @@
 pipeline {
-    agent any
-    environment {
-        // Define your Docker Hub credentials and image name here
-        KUBE_CONTEXT = 'ilyas-wordpress'  // Kube context if you have multiple clusters
-        KUBERNETES_NAMESPACE = 'ilyasjae-wordpress'  // Replace with your namespace
+  agent any
+  environment {
+    KUBE_CONTEXT = 'ilyas-wordpress'  // Kube context if you have multiple clusters
+    KUBERNETES_NAMESPACE = 'ilyas-wordpress'  // Replace with your namespace
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        // Checkout your repository
+        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'ilyas-github', url: 'git@github.com:ilyasjaelani/wp-iaj.git']])
+      }
     }
-    stages {
-        stage('Checkout') {
-            steps {
-                // Checkout your repository
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'ilyas-github', url: 'git@github.com:ilyasjaelani/wp-iaj.git']])
-            }
+    stage('Deploy to Kubernetes') {
+      steps {
+        withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'ilyas-k8s', contextName: '', credentialsId: 'ilyas-k8s-config', namespace: '$KUBERNETES_NAMESPACE', serverUrl: '']]) {
+          sh '''
+            kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
+            sleep 60
+          '''
         }
-        //stage('Create namespace on Kubernetes') {
-        //    steps {
-        //        script {
-        //           // Create namespace on Kubernetes using kubectl
-        //            sh '''
-        //                kubectl create namespace $KUBERNETES_NAMESPACE
-        //            '''
-        //        }
-        //    }
-        //}
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    // Deploy to Kubernetes using kubectl
-                    sh '''
-                        kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
-                        sleep 60
-                    '''
-                }
-            }
-        }
-        //stage('delete manifest in Kubernetes') {
-        //   steps {
-        //        script {
-        //            // Deploy to Kubernetes using kubectl
-        //            sh '''
-        //                kubectl delete -k ./ -n $KUBERNETES_NAMESPACE
-        //                sleep 60
-        //            '''
-        //        }
-        //    }
-        //}
-        stage('View Namespaces') {
-            steps {
-                script {
-                    // Create namespace on Kubernetes using kubectl
-                    sh '''
-                        kubectl get all -n $KUBERNETES_NAMESPACE
-                    '''
-                }
-            }
-        }
+      }
     }
+    stage('View Namespaces') {
+      steps {
+        withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'ilyas-k8s', contextName: '', credentialsId: 'ilyas-k8s-config', namespace: 'KUBERNETES_NAMESPACE', serverUrl: '']]) {
+          sh '''
+            kubectl get all -n $KUBERNETES_NAMESPACE
+          '''
+        }
+      }
+    }
+  }
 }
-
