@@ -15,7 +15,7 @@ pipeline {
       steps {
         withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: 'ilyas-k8s', contextName: '', credentialsId: 'ilyas-k8s-config', namespace: 'default', serverUrl: 'https://k8s-master01:6443']]) {
           sh '''
-            kubectl apply -k ./ -n $KUBERNETES_NAMESPACE
+            kubectl delete -k ./ -n $KUBERNETES_NAMESPACE
             sleep 60
           '''
         }
